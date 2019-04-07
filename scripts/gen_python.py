@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """ SoLoud Python wrapper generator """
 
 import soloud_codegen
@@ -18,12 +19,14 @@ C_TO_PY_TYPES = {
     "int":"ctypes.c_int",
     "void":"None",
     "const char *":"ctypes.c_char_p",
+    "char *":"ctypes.c_char_p",
     "unsigned int":"ctypes.c_uint",
     "float":"ctypes.c_float",
     "double":"ctypes.c_double",
     "float *":"ctypes.POINTER(ctypes.c_float * 256)",
     "File *":"ctypes.c_void_p",
     "unsigned char *":"ctypes.POINTER(ctypes.c_ubyte)",
+    "unsigned char":"ctypes.c_ubyte",
     "short *":"ctypes.POINTER(ctypes.c_short)"
 }
 
@@ -68,7 +71,7 @@ fo.write('\n')
 fo.write('try:\n')
 fo.write('\tsoloud_dll = ctypes.CDLL("soloud_x86")\n')
 fo.write('except:\n')
-fo.write('\tprint "SoLoud dynamic link library (soloud_x86.dll on Windows) not found. Terminating."\n')
+fo.write('\tprint("SoLoud dynamic link library (soloud_x86.dll on Windows) not found. Terminating.")\n')
 fo.write('\tsys.exit()')
 fo.write("\n")
 
@@ -125,6 +128,10 @@ fo.write('# OOP wrappers\n')
 
 def fix_default_param(defparam, classname):
     """ 'fixes' default parameters from C to what python expectes """
+    if defparam == 'false':
+        defparam = 'False'
+    if defparam == 'true':
+        defparam = 'True'
     if (classname + '::') == defparam[0:len(classname)+2:]:
         return defparam[len(classname)+2::]
     if defparam[len(defparam)-1] == "f":
@@ -205,13 +212,16 @@ for x in soloud_codegen.soloud_type:
                             if fudged_type == 'ctypes.c_void_p':
                                 fo.write(z[1] + '.objhandle')
                             else:
-                                fo.write(fudged_type + '(' +  z[1] + ')')
+                                if fudged_type == 'ctypes.c_char_p':
+                                    fo.write(fudged_type + '(' +  z[1] + ".encode('utf-8'))")
+                                else:
+                                    fo.write(fudged_type + '(' +  z[1] + ')')
                 fo.write(')\n')
                 if floatbufreturn:
                     fo.write('\t\treturn [f for f in floatbuf.contents]\n')
 
 
 
-print "soloud.py generated"
+print("soloud.py generated")
 
 fo.close()

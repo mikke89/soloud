@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """ SoLoud C# (cs) wrapper generator """
 
 import soloud_codegen
@@ -10,12 +11,14 @@ C_TO_CS_TYPES = {
     "int":"int",
     "void":"void",
     "const char *":"string",
+    "char *":"string",
     "unsigned int":"uint",
     "float":"float",
     "double":"double",
     "float *":"float[]",
     "File *":"SoloudObject",
     "unsigned char *":"IntPtr",
+    "unsigned char":"byte",
     "short *":"IntPtr"
 }
 
@@ -222,6 +225,6 @@ for x in soloud_codegen.soloud_type:
 
 fo.write('}\n')
 
-print "soloud.cs generated"
+print("soloud.cs generated")
 
 fo.close()

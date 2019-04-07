@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Gamemaker wrapper generator
 
 import subprocess
@@ -10,8 +11,10 @@ import soloud_codegen
 
 UNSUPPORTED_TYPES = {
     "int":0,
+    "unsigned char":0,
     "void":0,
     "const char *":0,
+    "char *":0,
     "unsigned int":0,
     "float":0,
     "double":0,
@@ -38,7 +41,7 @@ while restart == 1:
               if UNSUPPORTED_TYPES[p[0]] == 1:
                   delx = 1
         if delx == 1:
-          print "removing " + soloud_codegen.soloud_func[idx][1] + " (unsupported variable type)"
+          print("removing " + soloud_codegen.soloud_func[idx][1] + " (unsupported variable type)")
           del soloud_codegen.soloud_func[idx]
           restart = 1
         else:
@@ -52,8 +55,10 @@ PTRTYPE = "2"
 
 C_TO_GMX_TYPES = {
     "int":"2",
+    "unsigned char":"2",
     "void":"2",
     "const char *":PTRTYPE,
+    "char *":PTRTYPE,
     "unsigned int":"2",
     "float":"2",
     "double":"2",
@@ -168,7 +173,7 @@ fo.write("""      </constants>
 """)
   
 fo.close()
-print "soloud.extension.gmx generated"
+print("soloud.extension.gmx generated")
 
 
 fo = open("soloud_gamemaker_dll.c", "w")
@@ -241,8 +246,10 @@ static void* getSoloudProc(const char *aProcName)
 
 MASK_TYPES = {
     "int":"int",
+    "unsigned char":"unsigned char",
     "void":"void",
     "const char *":"const char *",
+    "char *":"char *",
     "unsigned int":"unsigned int",
     "float":"float",
     "double":"double",
@@ -274,8 +281,10 @@ fo.write("\n")
 
 C_TO_GMX_DLL_TYPES = {
     "int":"double",
+    "unsigned char":"double",     
     "void":"double",
     "const char *":"char *",
+    "char *":"char *",
     "unsigned int":"double",
     "float":"double",
     "double":"double",
@@ -290,11 +299,13 @@ IS_HANDLE_TYPE = {
     "int":0,
     "void":0,
     "const char *":0,
+    "char *":0,
     "unsigned int":0,
     "float":0,
     "double":0,
     "float *":0,
-    "unsigned char *":0
+    "unsigned char *":0,
+    "unsigned char":0
 }
 for soloud_type in soloud_codegen.soloud_type:
     IS_HANDLE_TYPE[soloud_type + " *"] = 1
@@ -347,26 +358,26 @@ for x in soloud_codegen.soloud_func:
   fo.write("\n")      
 
 fo.close()
-print "soloud_gamemaker_dll.c generated"
+print("soloud_gamemaker_dll.c generated")
 
 fo = open("soloud_gamemaker_dll.def", "w")
 fo.write("EXPORTS\n")
 for x in soloud_codegen.soloud_func:
   fo.write("\t" + x[1] + "\n")
 fo.close()
-print "soloud_gamemaker_dll.def generated"
+print("soloud_gamemaker_dll.def generated")
 
-print "compiling dll"
+print("compiling dll")
 callp = ["compile_gamemaker_dll.bat"]
 subprocess.call(callp)
 
 if not os.path.exists("gm_temp/soloud"):
   os.makedirs("gm_temp/soloud")
-print "copying files to gm_temp"
+print("copying files to gm_temp")
 shutil.copy("soloud.extension.gmx", "gm_temp")
 shutil.copy("soloud_gamemaker_dll.dll", "gm_temp/soloud")
 shutil.copy("../lib/soloud_x86.dll", "gm_temp/soloud")
-shutil.copy("../bin/msvcr100.dll", "gm_temp/soloud")
 
 callp = ["make_gmez.bat"]
 subprocess.call(callp)
+

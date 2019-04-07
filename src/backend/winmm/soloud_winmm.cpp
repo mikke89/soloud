@@ -95,10 +95,11 @@ namespace SoLoud
         SoLoudWinMMData *data = static_cast<SoLoudWinMMData*>(aSoloud->mBackendData);
         SetEvent(data->audioProcessingDoneEvent);
         SetEvent(data->bufferEndEvent);
-        Thread::wait(data->threadHandle);
-        Thread::release(data->threadHandle);
-        CloseHandle(data->audioProcessingDoneEvent);
-        CloseHandle(data->bufferEndEvent);
+		if (data->threadHandle)
+		{
+			Thread::wait(data->threadHandle);
+			Thread::release(data->threadHandle);
+		}
         waveOutReset(data->waveOut);
         for (int i=0;i<BUFFER_COUNT;++i) 
         {
@@ -109,6 +110,8 @@ namespace SoLoud
             }
         }
         waveOutClose(data->waveOut);
+        CloseHandle(data->audioProcessingDoneEvent);
+        CloseHandle(data->bufferEndEvent);
         delete data;
         aSoloud->mBackendData = 0;
     }
@@ -133,7 +136,7 @@ namespace SoLoud
         }
         WAVEFORMATEX format;
         ZeroMemory(&format, sizeof(WAVEFORMATEX));
-        format.nChannels = 2;
+        format.nChannels = aChannels;
         format.nSamplesPerSec = aSamplerate;
         format.wFormatTag = WAVE_FORMAT_PCM;
         format.wBitsPerSample = sizeof(short)*8;
@@ -157,7 +160,7 @@ namespace SoLoud
                 return UNKNOWN_ERROR;
             }
         }
-        aSoloud->postinit(aSamplerate, data->samples * format.nChannels, aFlags, 2);
+        aSoloud->postinit(aSamplerate, data->samples * format.nChannels, aFlags, aChannels);
         data->threadHandle = Thread::createThread(winMMThread, data);
         if (0 == data->threadHandle)
         {

@@ -41,7 +41,7 @@ freely, subject to the following restrictions:
 
 #ifdef USE_PORTMIDI
 #include "portmidi.h"
-#include <Windows.h>
+#include <windows.h>
 #endif
 
 struct plonked
@@ -69,7 +69,7 @@ plonked gPlonked[128] = { 0 };
 int gWaveSelect = 2;
 int gFilterSelect = 0;
 int gEcho = 0;
-char *gInfo = "";
+char *gInfo = (char*)"";
 
 #ifdef USE_PORTMIDI
 PmStream *midi = NULL;
@@ -96,7 +96,6 @@ void plonk(float rel, float vol = 0x50)
 		if (gWaveSelect == 5)
 		{
 			handle = gBus.play(gPadsynth, 0);
-			gSoloud.seek(handle, gPadsynth.getLength() * ((rand() % 1000) / 1000.0f));
 		}
 	}
 	gSoloud.fadeVolume(handle, vol, gAttack);
@@ -132,9 +131,9 @@ void replonk(float vol = 0x50)
 	}
 }
 
-void say(char *text)
+void say(const char *text)
 {
-	gInfo = text;
+	gInfo = (char*)text;
 	gSpeech.setText(text);
 	gSoloud.play(gSpeech, 4);
 }
@@ -177,7 +176,7 @@ int DemoEntry(int argc, char *argv[])
 	gSpeech.setFilter(1, &gFftFilter);
 
 	gSpeech.setText(". . . . . . . . . . . . . . . Use keyboard to play!");
-	gInfo = "Use keyboard to play!";
+	gInfo = (char*)"Use keyboard to play!";
 	gSoloud.play(gSpeech, 4);
 
 	gLoadedWave.load("audio/AKWF_c604_0024.wav");

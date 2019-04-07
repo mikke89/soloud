@@ -332,6 +332,7 @@ solution "SoLoud"
 	targetdir "../bin"
 	debugdir "../bin"
 	flags { "NoExceptions", "NoRTTI", "NoPCH" }
+    if (os.is("Windows")) then flags {"StaticRuntime"} end
 	if (os.is("Windows")) then defines { "_CRT_SECURE_NO_WARNINGS" } end
     configuration { "x32", "Debug" }
         targetsuffix "_x86_d"   
@@ -386,6 +387,7 @@ end
 		links {"SoloudStatic"}
 		if (not os.is("windows")) then
 		  links { "pthread" }
+		  links { "dl" }
 		end
 
 		targetname "simplest"
@@ -411,7 +413,8 @@ end
 		links {"SoloudStatic"}
 		if (not os.is("windows")) then
 		  links { "pthread" }
-		end
+		  links { "dl" }
+        end
 
 		targetname "welcome"
 
@@ -437,6 +440,7 @@ end
 		links {"SoloudStatic"}
 		if (not os.is("windows")) then
 		  links { "pthread" }
+		  links { "dl" }
 		end
 
 		targetname "null"
@@ -462,6 +466,7 @@ end
 		links {"SoloudStatic"}
 		if (not os.is("windows")) then
 		  links { "pthread" }
+		  links { "dl" }
 		end
 
 		targetname "enumerate"
@@ -672,6 +677,7 @@ if (WITH_TOOLS == 1) then
 		links {"SoloudStatic"}
 		if (not os.is("windows")) then
 		  links { "pthread" }
+		  links { "dl" }
 		end
 
 		targetname "sanity"
@@ -746,6 +752,7 @@ end
 		links {"SoloudStatic"}
 		if (not os.is("windows")) then
 		  links { "pthread" }
+		  links { "dl" }
 		end
 if (WITH_ALSA == 1) then
 	links {"asound"}
@@ -825,42 +832,22 @@ if (WITH_COREAUDIO == 1) then
 	links {"AudioToolbox.framework"}
 end
 
-		links {"SoloudStatic", "SoloudDemoCommon", "SDL2main", "SDL2", "opengl32"}
+		links {"SoloudStatic", "SoloudDemoCommon", "SDL2main", "SDL2"}
+if (os.is("Windows")) then
+        links {"opengl32"}
+end
+		if (not os.is("windows")) then
+		  links { "pthread" }
+		  links { "dl" }
+		  links { "GL" }
+		end
 
 		targetname (_name)
 end
 
 -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
 
-  CommonDemo("3dtest")
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-  CommonDemo("virtualvoices")
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-  CommonDemo("mixbusses")
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-  CommonDemo("pewpew")
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-		
-   CommonDemo("space")  
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-   CommonDemo("multimusic")
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-   CommonDemo("monotone")
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-   CommonDemo("tedsid")
+  CommonDemo("megademo")
 
 -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
 
@@ -899,7 +886,15 @@ end
 		links { "portmidi" }
 	end
 
-		links {"SoloudStatic", "SDL2main", "SDL2", "opengl32"}
+		links {"SoloudStatic", "SDL2main", "SDL2"}
+if (os.is("Windows")) then
+        links {"opengl32"}
+end
+		if (not os.is("windows")) then
+		  links { "pthread" }
+		  links { "dl" }
+		  links { "GL" }
+		end
 
 		targetname "piano"
 
@@ -919,12 +914,6 @@ end
     CommonDemo("env")
 
 -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-    CommonDemo("speechfilter")
-
--- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< -- 8< --
-
-    CommonDemo("radiogaga")
     
 end
 
