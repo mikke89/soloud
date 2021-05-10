@@ -75,8 +75,8 @@ namespace space
 		gSpeech.setFilter(2, &gReso);
 		gLofi.setParams(8000, 4);
 		gFlanger.setParams(0.002f, 100);
-		//	gReso.setParams(SoLoud::BiquadResonantFilter::LOWPASS, 8000, 500, 5);
-		gReso.setParams(SoLoud::BiquadResonantFilter::BANDPASS, 8000, 1000, 0.5);
+		//	gReso.setParams(SoLoud::BiquadResonantFilter::LOWPASS, 500, 5);
+		gReso.setParams(SoLoud::BiquadResonantFilter::BANDPASS, 1000, 0.5);
 
 		gSpeech.setText("What the alien has to say might\n"
 			"appear around here if this\n"
@@ -145,7 +145,7 @@ namespace space
 			"parts of the audio pipeline.";
 		char temp[512];
 		int i = 0;
-		while (s[i] && i < (tick - gTickofs) / 70)
+		while (i < (tick - gTickofs) / 70 && s[i])
 		{
 			temp[i] = s[i];
 			i++;

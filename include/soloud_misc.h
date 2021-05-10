@@ -1,6 +1,6 @@
 /*
 SoLoud audio engine
-Copyright (c) 2013-2019 Jari Komppa
+Copyright (c) 2020 Jari Komppa
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -22,37 +22,32 @@ freely, subject to the following restrictions:
    distribution.
 */
 
-#include <stdlib.h>
+#ifndef SOLOUD_MISC_H
+#define SOLOUD_MISC_H
 
-#define SOLOUD_HPP_IMPLEMENTATION
-#include "soloud.hpp"
+#include "soloud.h"
 
-// Entry point
-int main(int argc, char *argv[])
+namespace SoLoud
 {
-	// Define a couple of variables
-	SoLoud::Soloud soloud;  // SoLoud engine core
-	SoLoud::Speech speech;  // A sound source (speech, in this case)
-
-	// Configure sound source
-	speech.setText("1 2 3   1 2 3   Hello world. Welcome to So-Loud.");
-
-	// initialize SoLoud.
-	soloud.init();
-
-	// Play the sound source (we could do this several times if we wanted)
-	soloud.play(speech);
-
-	// Wait until sounds have finished
-	while (soloud.getActiveVoiceCount() > 0)
+	namespace Misc
 	{
-		// Still going, sleep for a bit
-		SoLoud::Thread::sleep(100);
-	}
+		// Generate a waveform.
+		float generateWaveform(int aWaveform, float p);
 
-	// Clean up SoLoud
-	soloud.deinit();
+		// WELL512 random
+		class Prg
+		{
+		public:
+			// random generator
+			Prg();
+			unsigned int mState[16];
+			unsigned int mIndex;
+			unsigned int rand();
+			float rand_float();
+			void srand(int aSeed);
+		};
 
-	// All done.
-	return 0;
-}
+	};
+};
+
+#endif
